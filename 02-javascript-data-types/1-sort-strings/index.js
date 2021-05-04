@@ -8,9 +8,11 @@ export function sortStrings(arr, param = 'asc') {
   return [...arr].sort(function(a, b) {
     switch (param) {
     case 'desc' : 
-      return b.localeCompare(a, 'kf', {caseFirst: 'upper'});
+      return b.localeCompare(a, ['ru', 'en'], {caseFirst: 'upper'});
+    case 'asc': 
+      return a.localeCompare(b, ['ru', 'en'], {caseFirst: 'upper'});
     default: 
-      return a.localeCompare(b, 'kf', {caseFirst: 'upper'});
+      return 0;  
     }
   });
 }
