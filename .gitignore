@@ -143,3 +143,5 @@ teacher.karma.conf.js
 
 teacher*
 TODO.md
+
+jest-setup-files-after-env.js
