@@ -1,14 +1,12 @@
 export default class NotificationMessage {
-  lastNotificationElement = null;
-  timerId = null;
+  static lastNotificationElement = null;
+  static timerId = null;
 
   constructor(message = '', {duration = 1000, type = 'success'} = {}) {
     this.message = message;
     this.duration = duration;
     this.type = type;
     this.render();
-    this.initEventListeners();
-    this.container = null;
   }
     
   render() {
@@ -40,20 +38,15 @@ export default class NotificationMessage {
     this.remove();
   }
 
-  show(element) {
+  show(element = document.body) {
     if (NotificationMessage.timerId) {
       this.clear();
     }
-    const container = element || document.body;
-    container.append(this.element);
+    element.append(this.element);
     NotificationMessage.lastNotificationElement = this.element;
     NotificationMessage.timerId = setTimeout(() => {
       this.clear();
     }, this.duration);
-  }
-    
-  initEventListeners () {
-    // NOTE: в данном методе добавляем обработчики событий, если они есть
   }
     
   remove () {
