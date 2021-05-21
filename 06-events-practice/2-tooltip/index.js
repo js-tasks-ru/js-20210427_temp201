@@ -7,28 +7,26 @@ class Tooltip {
     }
 
     Tooltip.instance = this;
-    this.render();
 
   }
 
-  render () {
+  render (title = 'Default tooltip') {
     const element = document.createElement('div');
-    element.innerHTML = `<div class="tooltip">This is tooltip</div>`;
+    element.innerHTML = `<div class="tooltip">${title}</div>`;
 
     this.element = element.firstElementChild;
+    document.body.append(this.element);
   }
 
   initialize () {
     document.body.addEventListener('pointerover', (e) => {
       if (e.target.dataset.tooltip) {
-        console.log('over', e.currentTarget);
-        e.target.append(this.element);
+        this.render(e.target.dataset.tooltip);
       }
     });
     document.body.addEventListener('pointerout', (e) => {
       if (e.target.dataset.tooltip) {
-        console.log('out', e.currentTarget);
-        e.target.removeChild(this.element);
+        this.remove();
       }
     });
   }
