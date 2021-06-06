@@ -17,22 +17,23 @@ export default class SortableList {
       elem = null;
     } else if (e.target.hasAttribute('data-grab-handle')) {
       this.draggableItem = e.target.closest('.sortable-list__item');
-      if (this.draggableItem && this.placeholder) { 
-        this.shiftX = e.clientX - this.draggableItem.getBoundingClientRect().left;
-        this.shiftY = this.draggableItem.offsetHeight / 2;
+      if (this.draggableItem) { 
+        // e.preventDefault();
+        const {x, y} = this.draggableItem.getBoundingClientRect();
+        this.shiftX = e.clientX - x;
+        this.shiftY = e.clientY - y;
         this.element.insertBefore(this.placeholder, this.draggableItem);
         this.draggableItem.classList.add('sortable-list__item_dragging');
-        this.draggableItem.style.left = e.pageX - this.shiftX + 'px'; 
-        this.draggableItem.style.top = e.pageY - this.shiftY + 'px';
+        this.draggableItem.style.left = e.clientX - this.shiftX + 'px'; 
+        this.draggableItem.style.top = e.clientY - this.shiftY + 'px';
         this.draggableItem.style.width = this.placeholder.offsetWidth + 'px';
-        document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
       }
     }
   }
 
   handleMouseMove = (e) => {
     if (this.draggableItem) {
-      // e.preventDefault();
+      e.preventDefault();
       const display = this.draggableItem.style.display;
       this.draggableItem.style.display = 'none';  
       let elemBelow = document.elementFromPoint(e.clientX, e.clientY);
@@ -47,14 +48,13 @@ export default class SortableList {
         }
       }
       this.draggableItem.style.display = display;  
-      this.draggableItem.style.left = e.pageX - this.shiftX + 'px'; 
-      this.draggableItem.style.top = e.pageY - this.shiftY + 'px';
+      this.draggableItem.style.left = e.clientX - this.shiftX + 'px'; 
+      this.draggableItem.style.top = e.clientY - this.shiftY + 'px';
     }
   }
 
-  handlePointerUp = (e) => {
+  handlePointerUp = () => {
     if (this.draggableItem) {
-      document.removeEventListener('mousemove', (e) => this.handleMouseMove(e));
       this.draggableItem.classList.remove('sortable-list__item_dragging');
       this.draggableItem.style = '';
       if (this.draggableItem && this.replacedItem) {
@@ -86,12 +86,18 @@ export default class SortableList {
 
   initEventListeners () {
     document.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
+    document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
     document.addEventListener('pointerup', (e) => this.handlePointerUp(e));
   }
 
   removeEventListeners () {
     document.removeEventListener('pointerdown', (e) => this.handlePointerDown(e));
+    document.removeEventListener('mousemove', (e) => this.handleMouseMove(e));
     document.removeEventListener('pointerup', (e) => this.handlePointerUp(e));
+  }
+
+  addItem(item) {
+    this.element.append(item);
   }
 
   remove () {
